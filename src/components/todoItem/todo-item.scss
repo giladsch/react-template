@@ -1,0 +1,21 @@
+.view {
+  border: 1px#ededed solid;
+  display: flex;
+  justify-content: space-between;
+  .label {
+    width: 70%;
+  }
+  label {
+    padding-top: 11px;
+    width: 400px;
+    text-align: left;
+  }
+  .destroy {
+    visibility: hidden;
+  }
+  &:hover {
+    .destroy {
+      visibility: visible;
+    }
+  }
+}
