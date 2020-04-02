@@ -1,6 +1,10 @@
+$base-width: 60%;
+
 .App {
   text-align: center;
-  width: 50%;
+  width: $base-width;
+  padding-left: (100%-$base-width)/2;
+  padding-top: 5%;
 }
 
 .App-logo {

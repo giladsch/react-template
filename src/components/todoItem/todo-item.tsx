@@ -59,7 +59,7 @@ export const TodoItem: React.FC<TodoItemProps> = props => {
   };
 
   return (
-    <div className="view">
+    <div className={`view ${itemCompleted ? "completed" : ""}`}>
       <Checkbox
         color="primary"
         inputProps={{ "aria-label": "secondary checkbox" }}

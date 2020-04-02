@@ -48,9 +48,8 @@ export const Todos: React.FC<{}> = props => {
     //   )}
     // </FooterContext.Consumer>
 
-    <div>
+    <div className="todo-list">
       {getNew()}
-      <h1>{footerContext.name}</h1>
       {getAllItemsElements()}
     </div>
   );
