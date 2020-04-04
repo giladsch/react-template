@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { CircularProgress } from "@material-ui/core";
 import { Item, defaultItem, FilterTypes } from "../item-model";
+import { delay, ITEMS_LOCAL_STORAGE_KEY } from "../constants";
 
 export interface IFooterContext {
   addItem: (name: string) => void;
@@ -33,6 +35,13 @@ export const GlobalFooterContext: React.FC<{}> = props => {
   const [items, setItems] = useState<Item[]>([]);
   const [filter, setFilter] = useState(FilterTypes.ALL);
   const [todosRemainings, setRemainings] = useState(0);
+  const [showSpinner, setShowSpinner] = useState(true);
+
+  useEffect(() => {
+    getItemsFromServer().then(() => {
+      setShowSpinner(false);
+    });
+  }, []);
 
   const addItem = (name: string) => {
     if (!!name) {
@@ -47,6 +56,9 @@ export const GlobalFooterContext: React.FC<{}> = props => {
 
   const deleteItem = (itemToDelete: Item) => {
     setItems(items.filter(item => item.id !== itemToDelete.id));
+    if (!itemToDelete.completed) {
+      setRemainings(todosRemainings - 1);
+    }
   };
 
   const changeFilter = (currentFilter: FilterTypes) => {
@@ -72,6 +84,18 @@ export const GlobalFooterContext: React.FC<{}> = props => {
     return todosRemainings;
   };
 
+  const getItemsFromServer = async (): Promise<void> => {
+    await delay(1000);
+    const itemsInLocalStorage = localStorage.getItem(ITEMS_LOCAL_STORAGE_KEY);
+    const parsedItems = itemsInLocalStorage ? (JSON.parse(itemsInLocalStorage) as Item[]) : [];
+    setItems(parsedItems);
+    setRemainings(
+      parsedItems.filter(item => {
+        return !item.completed;
+      }).length
+    );
+  };
+
   return (
     <FooterContext.Provider
       value={{
@@ -85,7 +109,7 @@ export const GlobalFooterContext: React.FC<{}> = props => {
         getTodosRemainings: getTodosRemainings
       }}
     >
-      {props.children}
+      {showSpinner ? <CircularProgress /> : props.children}
     </FooterContext.Provider>
   );
 };
