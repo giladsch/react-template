@@ -15,3 +15,9 @@ let uniqueId = () => {
 export let defaultItem = (name: string): Item => {
   return { name: name, id: uniqueId(), completed: false };
 };
+
+export enum FilterTypes {
+  ALL = "ALL",
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED"
+}

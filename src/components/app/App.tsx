@@ -5,6 +5,7 @@ import "./App.scss";
 import { Todos } from "../todos/todos";
 import { Footer } from "../footer/footer";
 import { GlobalFooterContext } from "../../models/context/footer";
+import AppRouter from "../router/router";
 
 function App() {
   return (
@@ -18,12 +19,11 @@ function App() {
           Learn React
         </a>
       </header> */}
-      {/* <FooterContext.Provider value={{ name: "fdgfdgf" }}> */}
       <GlobalFooterContext>
         <Footer />
         <Todos />
+        <AppRouter></AppRouter>
       </GlobalFooterContext>
-      {/* </FooterContext.Provider> */}
     </div>
   );
 }

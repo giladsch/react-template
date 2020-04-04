@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -7,20 +7,21 @@ import InputBase from "@material-ui/core/InputBase";
 import "./todo-item.scss";
 import { Item } from "../../models/item-model";
 import { ESCAPE_KEY, ENTER_KEY } from "../../models/constants";
+import { FooterContext } from "../../models/context/footer";
 
 interface TodoItemProps {
   item: Item;
-  onDeleteItem: (itemId: string) => void;
+  onDeleteItem: (item: Item) => void;
 }
 
 export const TodoItem: React.FC<TodoItemProps> = props => {
-  const [itemName, setName] = useState(props.item.name);
-  const [itemCompleted, setCompleted] = useState(props.item.completed ? props.item.completed : false);
+  const [item, setItem] = useState(props.item);
   const [isItemBeingEdited, setItemEdited] = useState(false);
-  const [editText, setEditText] = useState(itemName);
-  let currentText = isItemBeingEdited ? editText : itemName;
+  const [editText, setEditText] = useState(item.name);
+  let currentText = isItemBeingEdited ? editText : item.name;
 
   let textInput = useRef(null);
+  const footerContext = useContext(FooterContext);
 
   const editItem = () => {
     setItemEdited(true);
@@ -28,7 +29,7 @@ export const TodoItem: React.FC<TodoItemProps> = props => {
   };
 
   const deleteItem = () => {
-    props.onDeleteItem(props.item.id);
+    props.onDeleteItem(item);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +42,7 @@ export const TodoItem: React.FC<TodoItemProps> = props => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESCAPE_KEY) {
-      handleSubmit(itemName);
+      handleSubmit(item.name);
     } else if (event.keyCode === ENTER_KEY) {
       handleSubmit(editText);
     }
@@ -49,21 +50,26 @@ export const TodoItem: React.FC<TodoItemProps> = props => {
 
   const handleSubmit = (editText: string) => {
     let text = editText.trim();
-    setName(text);
+    item.name = text;
+    setItem(item);
     setEditText(text);
     setItemEdited(false);
+    footerContext.updateItem(item);
   };
 
   const toggle = () => {
-    setCompleted(!itemCompleted);
+    item.completed = !item.completed;
+    debugger;
+    setItem(item);
+    footerContext.updateItem(item);
   };
 
   return (
-    <div className={`view ${itemCompleted ? "completed" : ""}`}>
+    <div className={`view ${item.completed ? "completed" : ""}`}>
       <Checkbox
         color="primary"
         inputProps={{ "aria-label": "secondary checkbox" }}
-        checked={itemCompleted}
+        checked={item.completed}
         onChange={toggle}
       />
       <InputBase
